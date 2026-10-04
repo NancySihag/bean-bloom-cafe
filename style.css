@@ -1592,10 +1592,11 @@ select {
 }
 
 .logo img {
-    width: 145px;
-    height: auto;
+    width: 70px;
+    height: 70px;
     display: block;
-    object-fit: contain;
+    object-fit: cover;
+    border-radius: 50%;
 }
 
 
@@ -1621,12 +1622,12 @@ select {
 }
 
 .footer-logo img {
-    width: 150px;
-    height: auto;
+    width: 80px;
+    height: 80px;
     display: block;
-    object-fit: contain;
+    object-fit: cover;
+    border-radius: 50%;
 }
-
 
 /* MOBILE */
 
