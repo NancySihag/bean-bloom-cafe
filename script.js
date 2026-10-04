@@ -1,3 +1,6 @@
+console.log("NEW SCRIPT VERSION 12345");
+console.log("NEW SCRIPT.JS IS LOADED");
+
 /* =========================
    SMOOTH NAVIGATION
 ========================== */
@@ -491,6 +494,190 @@ function removeTypingMessage() {
 
 
 /* =========================
+   LOCAL CHATBOT RESPONSES
+========================== */
+
+function getLocalBotReply(message) {
+
+    const text =
+        message.toLowerCase().trim();
+
+
+
+    /* GREETINGS */
+
+    if (
+        text.includes("hi") ||
+        text.includes("hello") ||
+        text.includes("hey") ||
+        text.includes("hii")
+    ) {
+
+        return "Hello! 👋 Welcome to Bean & Bloom Café. How can I help you today?";
+
+    }
+
+
+
+    /* MENU */
+
+    if (
+        text.includes("menu") ||
+        text.includes("food") ||
+        text.includes("coffee") ||
+        text.includes("drink")
+    ) {
+
+        return "☕ Our menu includes freshly brewed coffee, cappuccino, cold coffee, pastries, desserts, and other café favorites. You can explore the full menu in the Menu section.";
+
+    }
+
+
+
+    /* CAPPUCCINO */
+
+    if (
+        text.includes("cappuccino")
+    ) {
+
+        return "☕ Our cappuccino is freshly prepared and perfect for a cozy café break!";
+
+    }
+
+
+
+    /* COLD COFFEE */
+
+    if (
+        text.includes("cold coffee") ||
+        text.includes("iced coffee")
+    ) {
+
+        return "🧊 Our cold coffee is a refreshing chilled café favorite.";
+
+    }
+
+
+
+    /* DESSERT */
+
+    if (
+        text.includes("dessert") ||
+        text.includes("sweet")
+    ) {
+
+        return "🍰 We have delicious dessert options available. Check our Menu section for the available choices.";
+
+    }
+
+
+
+    /* PASTRIES */
+
+    if (
+        text.includes("pastry") ||
+        text.includes("pastries")
+    ) {
+
+        return "🥐 Our pastries are café favorites. Check the Menu section for the available options.";
+
+    }
+
+
+
+    /* RESERVATION */
+
+    if (
+        text.includes("reservation") ||
+        text.includes("reserve") ||
+        text.includes("book") ||
+        text.includes("booking")
+    ) {
+
+        return "📅 You can make a reservation using the Reservation form on our website.";
+
+    }
+
+
+
+    /* LOCATION */
+
+    if (
+        text.includes("location") ||
+        text.includes("address") ||
+        text.includes("where")
+    ) {
+
+        return "📍 You can find Bean & Bloom Café's location and contact information in the Contact section.";
+
+    }
+
+
+
+    /* CONTACT */
+
+    if (
+        text.includes("contact") ||
+        text.includes("phone") ||
+        text.includes("email")
+    ) {
+
+        return "📞 Our contact information is available in the Contact section at the bottom of the website.";
+
+    }
+
+
+
+    /* WIFI / WORK */
+
+    if (
+        text.includes("wifi") ||
+        text.includes("wi-fi") ||
+        text.includes("work") ||
+        text.includes("laptop")
+    ) {
+
+        return "💻 Bean & Bloom Café is designed to be a comfortable place to relax, work, or catch up with friends.";
+
+    }
+
+
+
+    /* THANK YOU */
+
+    if (
+        text.includes("thank") ||
+        text.includes("thanks")
+    ) {
+
+        return "You're very welcome! ☕✨ Hope to see you at Bean & Bloom Café!";
+
+    }
+
+
+
+    /* GOODBYE */
+
+    if (
+        text.includes("bye") ||
+        text.includes("goodbye")
+    ) {
+
+        return "Goodbye! 👋 Have a wonderful day!";
+
+    }
+
+
+
+    /* DEFAULT RESPONSE */
+
+    return "I'm the Bean & Bloom Café assistant 🤖☕ I can help with our menu, coffee, reservations, location, and café information. What would you like to know?";
+
+}
+
+
+
+/* =========================
    SEND CHAT MESSAGE
 ========================== */
 
@@ -547,60 +734,37 @@ async function sendChatMessage() {
 
     try {
 
-        const response =
-            await fetch(
-                "http://127.0.0.1:5000/chat",
-                {
+        /*
+         * FRONTEND-ONLY CHATBOT
+         *
+         * No Flask
+         * No Ollama
+         * No localhost
+         * No external API
+         */
 
-                    method: "POST",
+        await new Promise(
+            function (resolve) {
 
-                    headers: {
+                setTimeout(
+                    resolve,
+                    500
+                );
 
-                        "Content-Type":
-                            "application/json"
-
-                    },
-
-                    body: JSON.stringify({
-
-                        message: message,
-
-                        conversation:
-                            conversationHistory
-
-                    })
-
-                }
-            );
+            }
+        );
 
 
-        const data =
-            await response.json();
+        const reply =
+            getLocalBotReply(message);
 
+
+        /* Remove typing indicator */
 
         removeTypingMessage();
 
 
-        if (!response.ok) {
-
-            addChatMessage(
-                data.error ||
-                "Sorry, I couldn't process your message right now.",
-                "bot"
-            );
-
-
-            return;
-
-        }
-
-
-        const reply =
-            data.reply ||
-            "Sorry, I couldn't generate a response.";
-
-
-        /* Add AI response to UI */
+        /* Add bot response to UI */
 
         addChatMessage(
             reply,
@@ -608,7 +772,7 @@ async function sendChatMessage() {
         );
 
 
-        /* Save AI response */
+        /* Save bot response */
 
         conversationHistory.push({
 
@@ -631,11 +795,14 @@ async function sendChatMessage() {
 
 
         addChatMessage(
-            "I can't connect to the Bean & Bloom AI server right now. Please make sure the Python backend is running.",
+            "Sorry, something went wrong. Please try again.",
             "bot"
         );
 
+
     } finally {
+
+        /* Enable send button */
 
         if (chatbotSend) {
 
@@ -643,6 +810,8 @@ async function sendChatMessage() {
 
         }
 
+
+        /* Focus input */
 
         chatbotInput.focus();
 
@@ -701,8 +870,10 @@ console.log(
 );
 
 console.log(
-    "AI chatbot connected to local Ollama backend 🤖"
+    "Bean & Bloom frontend chatbot loaded successfully 🤖"
 );
+
+
 
 /* =========================
    FAQ ACCORDION
@@ -723,6 +894,7 @@ faqQuestions.forEach(function (question) {
             const faqItem =
                 question.parentElement;
 
+
             const faqAnswer =
                 faqItem.querySelector(
                     ".faq-answer"
@@ -741,10 +913,12 @@ faqQuestions.forEach(function (question) {
                             "active"
                         );
 
+
                         const otherAnswer =
                             item.querySelector(
                                 ".faq-answer"
                             );
+
 
                         if (otherAnswer) {
 
@@ -785,6 +959,8 @@ faqQuestions.forEach(function (question) {
     );
 
 });
+
+
 
 /* =========================
    SCROLL TO TOP
